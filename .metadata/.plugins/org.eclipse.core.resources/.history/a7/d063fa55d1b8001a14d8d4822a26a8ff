@@ -1,0 +1,9 @@
+package com.cwatts.demo.repository;
+
+import org.springframework.data.repository.Repository;
+
+import com.cwatts.demo.model.Project;
+
+public interface ProjectRepository extends Repository<Project, Long>{
+	
+}

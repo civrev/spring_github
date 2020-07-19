@@ -1,0 +1,9 @@
+package com.cwatts.demo.exception;
+
+public class NoSuchAssetException extends Exception{
+	String assetType;
+	String assetId;
+	
+	public NoSuchAssetException(String assetType, Object assetId, Throwable err) {
+	}
+}

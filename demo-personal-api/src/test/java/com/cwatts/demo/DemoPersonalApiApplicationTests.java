@@ -1,0 +1,28 @@
+package com.cwatts.demo;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cwatts.demo.model.*;
+import com.cwatts.demo.repository.*;
+
+@SpringBootTest
+class DemoPersonalApiApplicationTests {
+	
+	@Autowired
+	public ProjectRepository projectRepository;
+	
+	@Autowired
+	public TechnologyRepository technologyRepository;
+	
+	@Autowired
+	public FaqRepository faqRepository;
+
+	@Test
+	void contextLoads() {
+		System.out.println(projectRepository.getClass().getGenericInterfaces());
+	}
+
+}

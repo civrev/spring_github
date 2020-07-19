@@ -1,0 +1,37 @@
+package com.cwatts.swapi.service;
+
+import java.io.FileWriter;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class FileWritingService {
+	public String fileName = "./writing.txt"; 
+	
+	public String writeLine(String line) {
+		line = line.trim();
+		try {
+			FileWriter writer = new FileWriter(fileName, true);
+			writer.write(line);
+			writer.write("\n");
+			writer.close();
+			return "Success!";
+		} catch (Exception e){
+			return "Failure!"; 
+		}
+	}
+	
+	@PostConstruct
+	public void postConstructor() {
+		// reset file to header
+		try {
+			FileWriter writer = new FileWriter(fileName);
+			writer.write("Header Start:\n");
+			writer.close();
+		}catch(Exception e) {
+			
+		}
+	}
+}

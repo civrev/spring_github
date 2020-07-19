@@ -1,0 +1,5 @@
+package com.cwatts.demo.exception;
+
+public class NoSuchAssetException extends IllegalArgumentException {
+	
+}

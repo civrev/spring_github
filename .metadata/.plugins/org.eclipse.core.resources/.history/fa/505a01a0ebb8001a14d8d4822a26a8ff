@@ -1,0 +1,13 @@
+package com.cwatts.demo.model;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Faq {
+	@Id
+	public Long id;
+	
+	public String question;
+	public String answer;
+}

@@ -1,0 +1,13 @@
+package com.cwatts.demo;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class DemoPersonalApiApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}

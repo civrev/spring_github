@@ -1,0 +1,20 @@
+package com.cwatts.swapi.service;
+
+import java.io.FileWriter;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class FileWritingService {
+	public String fileName = "./writing.txt"; 
+	public String writeLine(String line) {
+		line = line.trim();
+		try {
+			FileWriter writer = new FileWriter(fileName);
+			writer.write(line);
+			return "Success!";
+		catch (Exception e){
+			return "Failure!"; 
+		}
+	}
+}

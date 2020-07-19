@@ -1,0 +1,19 @@
+package com.cwatts.demo.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class ProjectModel {
+	@Id
+	public long id;
+	
+	public String title;
+	
+	@Column(name="short_description")
+	public String shortDescription;
+	
+	@Column(name="long_description")
+	public String longDescription;
+}

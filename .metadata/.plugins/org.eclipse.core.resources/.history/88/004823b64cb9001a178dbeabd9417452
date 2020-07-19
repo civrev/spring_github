@@ -1,0 +1,131 @@
+package com.cwatts.demo.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cwatts.demo.model.Faq;
+import com.cwatts.demo.model.PKLongEntity;
+import com.cwatts.demo.model.Project;
+import com.cwatts.demo.model.Technology;
+import com.cwatts.demo.repository.FaqRepository;
+import com.cwatts.demo.repository.ProjectRepository;
+import com.cwatts.demo.repository.TechnologyRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@RestController
+public class AssetController {
+	HashMap<String, ModelRepo> mapper;
+	ObjectMapper objectMapper;
+	
+	class ModelRepo{
+		// helper class to map asset names to entity classes/repos
+		CrudRepository repo;
+		Class entityClass;
+		String name;
+		public ModelRepo(Class entityClass, CrudRepository repo) {
+			this.entityClass = entityClass;
+			this.repo = repo;
+			this.name = entityClass.getSimpleName().toLowerCase();
+		}
+	}
+	
+	public AssetController(ProjectRepository pRepo, FaqRepository faqRepo, TechnologyRepository tRepo) {
+		// jackson object mapper
+		objectMapper = new ObjectMapper();
+		
+		// add the resource types to repository/entity mapper
+		mapper = new HashMap<String, ModelRepo>();
+		
+		// any new models that use this controller
+		// add them here
+		ModelRepo[] repos = {
+				new ModelRepo(Project.class, pRepo),
+				new ModelRepo(Faq.class, faqRepo),
+				new ModelRepo(Technology.class, tRepo)
+		};
+		
+		for(ModelRepo repo: repos) {
+			mapper.put(repo.name, repo);
+		}
+	}
+	
+	@PutMapping("/asset/{assetType}")
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public void putEntity(@PathVariable String assetType, @RequestBody Map<String, Object> body) {
+		ModelRepo mr = mapper.get(assetType);
+		// convert to POJO
+		PKLongEntity obj = (PKLongEntity) objectMapper.convertValue(body, mr.entityClass);
+		// get the corresponding repo
+		CrudRepository repo = mr.repo;
+		// save entity to persistence
+		repo.save(obj);
+	}
+
+	@GetMapping("/asset/{assetType}/{id}")
+	public Object getEntity(@PathVariable String assetType, @PathVariable Long id) {
+		CrudRepository repo = mapper.get(assetType).repo;
+		Optional resource = repo.findById(id);
+		System.out.println("resource.get()");
+		System.out.println(resource.get());
+		if(resource.isPresent())
+			return resource.get();
+		else
+			throw new IllegalArgumentException(String.format("No %s with id %s", assetType, id));
+	}
+	
+	@GetMapping("/asset/{assetType}")
+	public List<Object> getMultiEntity(@PathVariable String assetType, @RequestParam(defaultValue="all") List<String> id){
+		// if no ids specified return all projects
+		CrudRepository repo = mapper.get(assetType).repo;
+		if (id.size() == 1 && id.get(0).equals("all"))
+			return (List<Object>) repo.findAll();
+		ArrayList<Long> ids = new ArrayList();
+		for(String i: id)
+			ids.add(Long.parseLong(i));
+		return (List<Object>) repo.findAllById(ids);
+	}
+	
+	@PostMapping("/asset/{assetType}/{id}")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void updateEntity(@PathVariable String assetType, @PathVariable Long id, @RequestBody Map<String, Object> body) {
+		ModelRepo mr = mapper.get(assetType);
+		// ensure old project exists
+		getEntity(assetType, id);
+		// convert to POJO
+		PKLongEntity obj = (PKLongEntity) objectMapper.convertValue(body, mr.entityClass);
+		// set the id
+		obj.setId(id);
+		// get the corresponding repo
+		CrudRepository repo = mr.repo;
+		// save the updated project
+		repo.save(obj);
+	}
+	
+	@DeleteMapping("/asset/{assetType}/{id}")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public void deleteEntity(@PathVariable String assetType, @PathVariable Long id) {
+		// get the corresponding repo
+		CrudRepository repo = mapper.get(assetType).repo;
+		// delete object
+		repo.deleteById(id);
+	}
+	
+	
+}

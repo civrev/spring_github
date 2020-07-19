@@ -1,0 +1,71 @@
+package com.cwatts.demo.controller;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.cwatts.demo.model.Technology;
+import com.cwatts.demo.repository.TechnologyRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class AssetControllerTest {
+	
+	MockMvc mvc;
+	ObjectMapper objectMapper;
+	
+	@Autowired
+	TechnologyRepository repo;
+
+    @BeforeEach
+    void setup(WebApplicationContext wac) {
+    	objectMapper = new ObjectMapper();
+        this.mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
+	
+	
+	@Test
+	void crudTest() throws Exception {
+		String baseUrl = "/asset/technology"; 
+		Technology tech = new Technology();
+		tech.setId(1L);
+		tech.setTitle("foo");
+		// should not already exist
+		mvc.perform(get(baseUrl + "/{id}", tech.getId()))
+			.andDo(print())
+			.andExpect(status().isNotFound());
+		
+		// create it
+		mvc.perform(put(baseUrl)
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(tech)))
+			.andDo(print())
+			.andExpect(status().isCreated());
+		
+		// get it, expect it to exist
+		mvc.perform(get(baseUrl + "/{id}", tech.getId()))
+			.andDo(print())
+			.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void dup() throws Exception {
+		create();
+		create();
+	}
+	
+}

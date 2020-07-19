@@ -1,0 +1,13 @@
+package com.cwatts.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoPersonalApiApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(DemoPersonalApiApplication.class, args);
+	}
+
+}

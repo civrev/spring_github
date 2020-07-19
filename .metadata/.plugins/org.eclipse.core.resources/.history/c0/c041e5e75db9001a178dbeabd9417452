@@ -1,0 +1,13 @@
+package com.cwatts.demo.exception;
+
+public class NoSuchAssetException extends Exception{
+	public String assetType;
+	public String assetId;
+	
+	public NoSuchAssetException(String assetType, Object assetId, Throwable err) {
+		this.assetType = assetType;
+		this.assetId = assetId.toString();
+		String message = String.format("No %s with id %s", assetType, assetId);
+		
+	}
+}

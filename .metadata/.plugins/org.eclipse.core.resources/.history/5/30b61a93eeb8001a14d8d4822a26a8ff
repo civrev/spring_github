@@ -1,0 +1,39 @@
+package com.cwatts.demo.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cwatts.demo.model.Project;
+import com.cwatts.demo.repository.ProjectRepository;
+
+@RestController
+public class ProjectController {
+	@Autowired
+	public ProjectRepository repo;
+	
+	@PutMapping("/project")
+	public void putProject(@RequestBody Project project) {
+		repo.save(project);
+	}
+
+	@GetMapping("/project/{id}")
+	public Project getProject(@PathVariable Long id) {
+		return repo.findById(id).get();
+	}
+	
+	@PostMapping("/project/{id}")
+	public void updateProject(@PathVariable Long id, @RequestBody Project project) {
+		
+	}
+	
+	@DeleteMapping("/project")
+	public void deleteProject() {
+		
+	}
+}

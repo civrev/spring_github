@@ -1,0 +1,31 @@
+package com.cwatts.demo;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cwatts.demo.model.Project;
+
+@SpringBootTest
+class DemoPersonalApiApplicationTests {
+	
+	@Autowired
+	public JdbcTemplate db;
+
+	@Test
+	void contextLoads() {
+	}
+	
+	@Test
+	@Transactional
+	void testProject() {
+		Project p = new Project();
+		p.setId(1);
+		p.setTitle("my title");
+		
+		
+	}
+
+}

@@ -1,0 +1,14 @@
+package com.cwatts.demo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cwatts.demo.model.Project;
+
+@RestController
+public class ProjectController {
+	@GetMapping("/project/{id}")
+	public Project getProject(@PathParam Long id) {
+		
+	}
+}
